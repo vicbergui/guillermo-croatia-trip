@@ -5,13 +5,757 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="A day-by-day Croatia trip itinerary for May 11 to May 20, 2026."
+      content="Guillermo's Croatia trip itinerary for May 11 to May 20, 2026."
     />
-    <title>Croatia Trip Itinerary</title>
-    <link rel="stylesheet" href="/src/styles.css" />
+    <title>Guillermo Croatia Trip</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17211f;
+        --muted: #5f6f6a;
+        --paper: #fbfaf6;
+        --panel: #ffffff;
+        --line: #dce4df;
+        --sea: #0d6f74;
+        --sea-dark: #084f55;
+        --terra: #b85f3a;
+        --terra-soft: #fff1e9;
+        --sky-soft: #e8f6f6;
+        --shadow: 0 18px 55px rgba(23, 33, 31, 0.12);
+        --radius: 8px;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(180deg, rgba(232, 246, 246, 0.8), rgba(251, 250, 246, 0.96) 360px),
+          var(--paper);
+        color: var(--ink);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .trip-hero,
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .trip-hero {
+        padding: 28px 0 20px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 36px;
+      }
+
+      .topbar a {
+        border: 1px solid rgba(13, 111, 116, 0.2);
+        border-radius: 999px;
+        color: var(--sea-dark);
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 9px 14px;
+        text-decoration: none;
+      }
+
+      .hero-grid {
+        align-items: stretch;
+        display: grid;
+        gap: 22px;
+        grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+      }
+
+      .hero-copy {
+        background:
+          linear-gradient(135deg, rgba(13, 111, 116, 0.9), rgba(184, 95, 58, 0.76)),
+          url("https://images.unsplash.com/photo-1555990538-c48dbe86055b?auto=format&fit=crop&w=1400&q=80");
+        background-position: center;
+        background-size: cover;
+        border-radius: var(--radius);
+        color: #fff;
+        min-height: 360px;
+        padding: clamp(28px, 6vw, 66px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
+        position: relative;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-copy::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.38));
+      }
+
+      .hero-copy > * {
+        position: relative;
+      }
+
+      .eyebrow {
+        color: var(--terra);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+      }
+
+      .hero-copy .eyebrow {
+        color: #fce1d4;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 8vw, 6rem);
+        line-height: 0.95;
+        margin-bottom: 18px;
+      }
+
+      h2 {
+        font-size: clamp(1.9rem, 4vw, 3rem);
+        line-height: 1;
+        margin-bottom: 0;
+      }
+
+      h3 {
+        font-size: 1.08rem;
+        line-height: 1.3;
+        margin-bottom: 8px;
+      }
+
+      .hero-dates {
+        font-size: clamp(1.1rem, 2.4vw, 1.55rem);
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+
+      .hero-note {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        max-width: 560px;
+      }
+
+      .overview-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 14px;
+        padding: 22px;
+      }
+
+      .overview-panel div {
+        border-bottom: 1px solid var(--line);
+        padding: 8px 0 20px;
+      }
+
+      .overview-panel div:last-child {
+        border-bottom: 0;
+        padding-bottom: 8px;
+      }
+
+      .metric {
+        color: var(--sea);
+        display: block;
+        font-size: 3.5rem;
+        font-weight: 850;
+        line-height: 1;
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-weight: 750;
+      }
+
+      main {
+        padding: 36px 0 72px;
+      }
+
+      .section-heading {
+        margin-bottom: 22px;
+      }
+
+      .itinerary-section,
+      .summary-section {
+        margin-top: 42px;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 14px;
+      }
+
+      .day-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+        overflow: hidden;
+      }
+
+      .day-date {
+        background: var(--sky-soft);
+        border-right: 1px solid var(--line);
+        display: flex;
+        gap: 16px;
+        padding: 22px;
+      }
+
+      .day-number {
+        align-items: center;
+        background: var(--sea);
+        border-radius: 999px;
+        color: #fff;
+        display: inline-flex;
+        flex: 0 0 44px;
+        font-weight: 850;
+        height: 44px;
+        justify-content: center;
+      }
+
+      .day-date h3 {
+        margin-bottom: 4px;
+      }
+
+      .day-date p,
+      .info-card p,
+      .card-actions,
+      .free-day {
+        color: var(--muted);
+      }
+
+      .day-content {
+        padding: 20px;
+      }
+
+      .base-row {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .base-label {
+        background: #edf1ef;
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        padding: 5px 9px;
+        text-transform: uppercase;
+      }
+
+      .day-items {
+        display: grid;
+        gap: 12px;
+      }
+
+      .info-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--sea);
+        border-radius: var(--radius);
+        padding: 16px;
+      }
+
+      .tour-card {
+        border-left-color: var(--terra);
+      }
+
+      .flight-card {
+        border-left-color: #4d6fd7;
+      }
+
+      .card-heading,
+      .card-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .card-actions {
+        border-top: 1px solid var(--line);
+        font-size: 0.92rem;
+        margin: 14px 0 0;
+        padding-top: 12px;
+      }
+
+      .card-actions a {
+        color: var(--sea-dark);
+        font-weight: 800;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+      }
+
+      .badge {
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: 0.76rem;
+        font-weight: 850;
+        padding: 6px 9px;
+        text-transform: uppercase;
+      }
+
+      .badge-hotel {
+        background: var(--sky-soft);
+        color: var(--sea-dark);
+      }
+
+      .badge-tour {
+        background: var(--terra-soft);
+        color: #874225;
+      }
+
+      .badge-flight {
+        background: #edf2ff;
+        color: #304ea8;
+      }
+
+      .card-city {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      .free-day {
+        background: rgba(255, 255, 255, 0.62);
+        border: 1px dashed #c8d4ce;
+        border-radius: var(--radius);
+        margin: 0;
+        padding: 14px 16px;
+      }
+
+      .summary-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #tours .summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      @media (max-width: 860px) {
+        .hero-grid,
+        .day-card,
+        .summary-grid,
+        #tours .summary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .overview-panel {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .overview-panel div {
+          border-bottom: 0;
+          border-right: 1px solid var(--line);
+          padding: 8px 14px 8px 0;
+        }
+
+        .overview-panel div:last-child {
+          border-right: 0;
+        }
+
+        .day-date {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+      }
+
+      @media (max-width: 560px) {
+        .trip-hero,
+        main {
+          width: min(100% - 22px, 1120px);
+        }
+
+        .topbar {
+          justify-content: stretch;
+        }
+
+        .topbar a {
+          flex: 1;
+          padding-inline: 6px;
+          text-align: center;
+        }
+
+        .hero-copy {
+          min-height: 330px;
+          padding: 24px;
+        }
+
+        .overview-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .overview-panel div {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+          padding: 8px 0 18px;
+        }
+
+        .metric {
+          font-size: 2.6rem;
+        }
+
+        .day-date,
+        .day-content {
+          padding: 16px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <script>
+      const trip = {
+        destination: "Croatia",
+        startDate: "2026-05-11",
+        endDate: "2026-05-20",
+        hotels: [
+          {
+            id: "damir",
+            name: "Brand new apartment Damir in city center",
+            address: "17 Ulica Miljenka Smoje, 21000 Split, Croatia",
+            city: "Split",
+            checkIn: "2026-05-11",
+            checkOut: "2026-05-16",
+          },
+          {
+            id: "hidden-stone-house",
+            name: "Hidden Stone House",
+            address: "26 Ulica od Domina, Old Town, 20000 Dubrovnik, Croatia",
+            city: "Dubrovnik",
+            checkIn: "2026-05-16",
+            checkOut: "2026-05-20",
+          },
+        ],
+        tours: [
+          {
+            id: "plitvice-lakes",
+            title: "From Split: Plitvice Lakes Guided Tour with Entry Tickets",
+            date: "2026-05-13",
+            startingCity: "Split",
+            url: "https://www.getyourguide.com/booking/4WMH79JP5VXA1LOSK3OGEQEZYY2AP568?visitor_id=5YRLVNN47GUQNDTJT3CI5QQDMA7KJ4XF&utm_source=getyourguide&utm_medium=email_transactional&utm_campaign=shopping_cart_confirmation_v2&utm_content=booking_summary_activity_details_move_v3",
+          },
+          {
+            id: "montenegro",
+            title: "From Dubrovnik: Montenegro Day Trip",
+            date: "2026-05-18",
+            startingCity: "Dubrovnik",
+            url: "https://www.getyourguide.com/booking/WAK5U6ZBJSDWKGF1FLVFJ1X9KSDXZMMU?visitor_id=5YRLVNN47GUQNDTJT3CI5QQDMA7KJ4XF&utm_source=getyourguide&utm_medium=email_transactional&utm_campaign=shopping_cart_confirmation_v2&utm_content=booking_summary_activity_details_move_v3",
+          },
+          {
+            id: "kravica-mostar-pocitelj",
+            title: "Dubrovnik: Kravica Waterfalls, Mostar and Pocitelj Day Trip",
+            date: "2026-05-19",
+            startingCity: "Dubrovnik",
+            url: "https://www.getyourguide.com/booking/RZ989S0SBA5REYNM6J3ZNPF3RLQ83ZS2?visitor_id=5YRLVNN47GUQNDTJT3CI5QQDMA7KJ4XF&utm_source=getyourguide&utm_medium=email_transactional&utm_campaign=shopping_cart_confirmation_v2&utm_content=booking_summary_activity_details_move_v3",
+          },
+        ],
+        travel: [
+          {
+            id: "barcelona-split",
+            date: "2026-05-11",
+            type: "Flight",
+            operator: "Vueling",
+            from: "Barcelona",
+            to: "Split",
+            departure: "18:00",
+            arrival: "20:05",
+          },
+          {
+            id: "dubrovnik-barcelona",
+            date: "2026-05-20",
+            type: "Flight",
+            operator: "Vueling",
+            from: "Dubrovnik",
+            to: "Barcelona",
+            departure: "08:55",
+            arrival: "11:25",
+          },
+        ],
+      };
+
+      const dateFormatter = new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      const weekdayFormatter = new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+      });
+
+      function parseDate(dateString) {
+        return new Date(`${dateString}T12:00:00`);
+      }
+
+      function toIsoDate(date) {
+        return date.toISOString().slice(0, 10);
+      }
+
+      function addDays(date, days) {
+        const nextDate = new Date(date);
+        nextDate.setDate(nextDate.getDate() + days);
+        return nextDate;
+      }
+
+      function getDateRange(startDate, endDate) {
+        const days = [];
+        let currentDate = parseDate(startDate);
+        const finalDate = parseDate(endDate);
+
+        while (currentDate <= finalDate) {
+          days.push(toIsoDate(currentDate));
+          currentDate = addDays(currentDate, 1);
+        }
+
+        return days;
+      }
+
+      function getActiveHotel(date) {
+        return trip.hotels.find((hotel) => date >= hotel.checkIn && date < hotel.checkOut);
+      }
+
+      function getCheckoutHotel(date) {
+        return trip.hotels.find((hotel) => date === hotel.checkOut);
+      }
+
+      function getToursForDate(date) {
+        return trip.tours.filter((tour) => tour.date === date);
+      }
+
+      function getTravelForDate(date) {
+        return trip.travel.filter((travel) => travel.date === date);
+      }
+
+      function getPrimaryBase(date) {
+        const activeHotel = getActiveHotel(date);
+        const checkoutHotel = getCheckoutHotel(date);
+        const firstTour = getToursForDate(date)[0];
+
+        if (activeHotel) return activeHotel.city;
+        if (checkoutHotel) return `${checkoutHotel.city} departure`;
+        if (firstTour) return firstTour.startingCity;
+        return "Croatia";
+      }
+
+      function getMapUrl(address) {
+        return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+      }
+
+      function formatDate(dateString) {
+        return dateFormatter.format(parseDate(dateString));
+      }
+
+      function formatWeekday(dateString) {
+        return weekdayFormatter.format(parseDate(dateString));
+      }
+
+      function getNights(hotel) {
+        const checkIn = parseDate(hotel.checkIn);
+        const checkOut = parseDate(hotel.checkOut);
+        return Math.round((checkOut - checkIn) / 86400000);
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function TripHeader() {
+        const days = getDateRange(trip.startDate, trip.endDate);
+
+        return `
+          <header class="trip-hero">
+            <nav class="topbar" aria-label="Trip sections">
+              <a href="#itinerary">Itinerary</a>
+              <a href="#hotels">Hotels</a>
+              <a href="#tours">Tours</a>
+            </nav>
+            <div class="hero-grid">
+              <section class="hero-copy" aria-labelledby="trip-title">
+                <p class="eyebrow">Upcoming trip</p>
+                <h1 id="trip-title">${trip.destination}</h1>
+                <p class="hero-dates">${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}</p>
+                <p class="hero-note">A clean day-by-day plan for bases, stays, and booked tours.</p>
+              </section>
+              <section class="overview-panel" aria-label="Trip overview">
+                <div><span class="metric">${days.length}</span><span class="metric-label">days</span></div>
+                <div><span class="metric">${trip.hotels.length}</span><span class="metric-label">hotel stays</span></div>
+                <div><span class="metric">${trip.tours.length}</span><span class="metric-label">booked tours</span></div>
+              </section>
+            </div>
+          </header>
+        `;
+      }
+
+      function HotelCard(hotel, options = {}) {
+        const badge = options.variant === "checkout" ? "Checkout" : "Hotel";
+        const dates = `${formatDate(hotel.checkIn)} - ${formatDate(hotel.checkOut)}`;
+
+        return `
+          <article class="info-card hotel-card">
+            <div class="card-heading">
+              <span class="badge badge-hotel">${badge}</span>
+              <span class="card-city">${escapeHtml(hotel.city)}</span>
+            </div>
+            <h3>${escapeHtml(hotel.name)}</h3>
+            <p>${escapeHtml(hotel.address)}</p>
+            <div class="card-actions">
+              <span>${dates}${options.showNights ? ` · ${getNights(hotel)} nights` : ""}</span>
+              <a href="${getMapUrl(hotel.address)}" target="_blank" rel="noreferrer">Open map</a>
+            </div>
+          </article>
+        `;
+      }
+
+      function TourCard(tour) {
+        return `
+          <article class="info-card tour-card">
+            <div class="card-heading">
+              <span class="badge badge-tour">Tour</span>
+              <span class="card-city">Starts in ${escapeHtml(tour.startingCity)}</span>
+            </div>
+            <h3><a href="${tour.url}" target="_blank" rel="noreferrer">${escapeHtml(tour.title)}</a></h3>
+            <p>${formatWeekday(tour.date)}, ${formatDate(tour.date)}</p>
+            <div class="card-actions">
+              <span>GetYourGuide booking</span>
+              <a href="${tour.url}" target="_blank" rel="noreferrer">View booking</a>
+            </div>
+          </article>
+        `;
+      }
+
+      function TravelCard(travel) {
+        return `
+          <article class="info-card flight-card">
+            <div class="card-heading">
+              <span class="badge badge-flight">${escapeHtml(travel.type)}</span>
+              <span class="card-city">${escapeHtml(travel.operator)}</span>
+            </div>
+            <h3>${escapeHtml(travel.from)} to ${escapeHtml(travel.to)}</h3>
+            <p>Departure ${escapeHtml(travel.departure)} · Arrival ${escapeHtml(travel.arrival)}</p>
+          </article>
+        `;
+      }
+
+      function DayCard(date, index) {
+        const activeHotel = getActiveHotel(date);
+        const checkoutHotel = getCheckoutHotel(date);
+        const tours = getToursForDate(date);
+        const travel = getTravelForDate(date);
+        const isDepartureDay = date === trip.endDate;
+        const base = getPrimaryBase(date);
+
+        return `
+          <article class="day-card">
+            <div class="day-date">
+              <span class="day-number">${String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>${formatWeekday(date)}</h3>
+                <p>${formatDate(date)}</p>
+              </div>
+            </div>
+            <div class="day-content">
+              <div class="base-row">
+                <span class="base-label">Base</span>
+                <strong>${escapeHtml(base)}</strong>
+              </div>
+              <div class="day-items">
+                ${travel.map((travelItem) => TravelCard(travelItem)).join("")}
+                ${activeHotel ? HotelCard(activeHotel) : ""}
+                ${checkoutHotel ? HotelCard(checkoutHotel, { variant: "checkout" }) : ""}
+                ${tours.map((tour) => TourCard(tour)).join("")}
+                ${
+                  !tours.length && !travel.length
+                    ? `<p class="free-day">${isDepartureDay ? "Checkout / departure day unless additional plans are added later." : "Free day / explore at your own pace."}</p>`
+                    : ""
+                }
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      function SummarySection(title, id, content) {
+        return `
+          <section class="summary-section" id="${id}" aria-labelledby="${id}-title">
+            <div class="section-heading">
+              <p class="eyebrow">${id === "hotels" ? "Where you sleep" : "What is booked"}</p>
+              <h2 id="${id}-title">${title}</h2>
+            </div>
+            <div class="summary-grid">${content}</div>
+          </section>
+        `;
+      }
+
+      function App() {
+        const days = getDateRange(trip.startDate, trip.endDate);
+
+        return `
+          ${TripHeader()}
+          <main>
+            <section class="itinerary-section" id="itinerary" aria-labelledby="itinerary-title">
+              <div class="section-heading">
+                <p class="eyebrow">Day by day</p>
+                <h2 id="itinerary-title">Itinerary</h2>
+              </div>
+              <div class="timeline">
+                ${days.map((date, index) => DayCard(date, index)).join("")}
+              </div>
+            </section>
+            ${SummarySection(
+              "Hotels",
+              "hotels",
+              trip.hotels.map((hotel) => HotelCard(hotel, { showNights: true })).join(""),
+            )}
+            ${SummarySection(
+              "Booked Tours",
+              "tours",
+              trip.tours.map((tour) => TourCard(tour)).join(""),
+            )}
+          </main>
+        `;
+      }
+
+      document.querySelector("#root").innerHTML = App();
+    </script>
   </body>
 </html>
