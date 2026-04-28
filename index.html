@@ -225,20 +225,7 @@
         background: var(--sky-soft);
         border-right: 1px solid var(--line);
         display: flex;
-        gap: 16px;
         padding: 22px;
-      }
-
-      .day-number {
-        align-items: center;
-        background: var(--sea);
-        border-radius: 999px;
-        color: #fff;
-        display: inline-flex;
-        flex: 0 0 44px;
-        font-weight: 850;
-        height: 44px;
-        justify-content: center;
       }
 
       .day-date h3 {
@@ -687,7 +674,6 @@
         return `
           <article class="day-card">
             <div class="day-date">
-              <span class="day-number">${String(index + 1).padStart(2, "0")}</span>
               <div>
                 <h3>${formatWeekday(date)}</h3>
                 <p>${formatDate(date)}</p>
