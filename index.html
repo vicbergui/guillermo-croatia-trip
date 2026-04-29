@@ -281,6 +281,16 @@
         border-left-color: #4d6fd7;
       }
 
+      .weather-card {
+        background: #f7fbfb;
+        border: 1px solid #d8e8e7;
+        border-radius: var(--radius);
+        display: grid;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding: 14px 16px;
+      }
+
       .card-heading,
       .card-actions {
         align-items: center;
@@ -329,6 +339,11 @@
         color: #304ea8;
       }
 
+      .badge-weather {
+        background: #e5f7f5;
+        color: var(--sea-dark);
+      }
+
       .card-city {
         color: var(--muted);
         font-size: 0.9rem;
@@ -341,6 +356,34 @@
         border-radius: var(--radius);
         margin: 0;
         padding: 14px 16px;
+      }
+
+      .weather-main {
+        align-items: baseline;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+      }
+
+      .weather-temp {
+        color: var(--sea-dark);
+        font-size: 1.7rem;
+        font-weight: 850;
+        line-height: 1;
+      }
+
+      .weather-detail {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 0;
+      }
+
+      .weather-meta {
+        color: var(--muted);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 0.9rem;
       }
 
       .summary-grid {
@@ -511,6 +554,50 @@
         ],
       };
 
+      const weatherLocations = {
+        Split: {
+          label: "Split",
+          latitude: 43.5081,
+          longitude: 16.4402,
+        },
+        Dubrovnik: {
+          label: "Dubrovnik",
+          latitude: 42.6507,
+          longitude: 18.0944,
+        },
+      };
+
+      const weatherCodeLabels = {
+        0: "Clear sky",
+        1: "Mainly clear",
+        2: "Partly cloudy",
+        3: "Overcast",
+        45: "Fog",
+        48: "Depositing rime fog",
+        51: "Light drizzle",
+        53: "Moderate drizzle",
+        55: "Dense drizzle",
+        56: "Light freezing drizzle",
+        57: "Dense freezing drizzle",
+        61: "Slight rain",
+        63: "Moderate rain",
+        65: "Heavy rain",
+        66: "Light freezing rain",
+        67: "Heavy freezing rain",
+        71: "Slight snow",
+        73: "Moderate snow",
+        75: "Heavy snow",
+        77: "Snow grains",
+        80: "Slight rain showers",
+        81: "Moderate rain showers",
+        82: "Violent rain showers",
+        85: "Slight snow showers",
+        86: "Heavy snow showers",
+        95: "Thunderstorm",
+        96: "Thunderstorm with slight hail",
+        99: "Thunderstorm with heavy hail",
+      };
+
       const dateFormatter = new Intl.DateTimeFormat("en-US", {
         month: "short",
         day: "numeric",
@@ -573,6 +660,12 @@
         if (checkoutHotel) return `${checkoutHotel.city} departure`;
         if (firstTour) return firstTour.startingCity;
         return "Croatia";
+      }
+
+      function getWeatherCity(base) {
+        if (base.includes("Dubrovnik")) return "Dubrovnik";
+        if (base.includes("Split")) return "Split";
+        return "Split";
       }
 
       function getMapUrl(address) {
@@ -683,6 +776,24 @@
         `;
       }
 
+      function WeatherCard(date, base) {
+        const city = getWeatherCity(base);
+
+        return `
+          <section class="weather-card" data-weather-card data-weather-date="${date}" data-weather-city="${city}" aria-label="Weather forecast for ${escapeHtml(city)} on ${formatDate(date)}">
+            <div class="card-heading">
+              <span class="badge badge-weather">Weather</span>
+              <span class="card-city">${escapeHtml(city)}</span>
+            </div>
+            <div class="weather-main">
+              <span class="weather-temp">Loading</span>
+              <span class="weather-summary">Live forecast</span>
+            </div>
+            <p class="weather-detail">Checking the latest forecast for this date.</p>
+          </section>
+        `;
+      }
+
       function DayCard(date, index) {
         const activeHotel = getActiveHotel(date);
         const checkoutHotel = getCheckoutHotel(date);
@@ -704,6 +815,7 @@
                 <span class="base-label">Base</span>
                 <strong>${escapeHtml(base)}</strong>
               </div>
+              ${WeatherCard(date, base)}
               <div class="day-items">
                 ${travel.map((travelItem) => TravelCard(travelItem)).join("")}
                 ${activeHotel ? HotelCard(activeHotel) : ""}
@@ -762,6 +874,105 @@
       }
 
       document.querySelector("#root").innerHTML = App();
+
+      function formatWeatherTemperature(value) {
+        return `${Math.round(value)}°C`;
+      }
+
+      function updateWeatherCard(card, forecast) {
+        card.querySelector(".weather-temp").textContent = `${formatWeatherTemperature(forecast.min)} / ${formatWeatherTemperature(forecast.max)}`;
+        card.querySelector(".weather-summary").textContent = weatherCodeLabels[forecast.code] || "Forecast available";
+        card.querySelector(".weather-detail").innerHTML = `
+          <span class="weather-meta">
+            <span>Rain chance ${forecast.rainChance}%</span>
+            <span>Wind up to ${Math.round(forecast.wind)} km/h</span>
+            <span>Updated live by Open-Meteo</span>
+          </span>
+        `;
+      }
+
+      function setWeatherUnavailable(card, message) {
+        card.querySelector(".weather-temp").textContent = "Pending";
+        card.querySelector(".weather-summary").textContent = "Forecast not available yet";
+        card.querySelector(".weather-detail").textContent = message;
+      }
+
+      async function fetchCityForecast(city) {
+        const location = weatherLocations[city];
+        const url = new URL("https://api.open-meteo.com/v1/forecast");
+        url.search = new URLSearchParams({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max",
+          timezone: "Europe/Zagreb",
+          forecast_days: "16",
+        }).toString();
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error("Weather forecast request failed.");
+        }
+
+        const data = await response.json();
+        const forecasts = {};
+
+        data.daily.time.forEach((date, index) => {
+          forecasts[date] = {
+            code: data.daily.weather_code[index],
+            max: data.daily.temperature_2m_max[index],
+            min: data.daily.temperature_2m_min[index],
+            rainChance: data.daily.precipitation_probability_max[index] ?? 0,
+            wind: data.daily.wind_speed_10m_max[index],
+          };
+        });
+
+        return forecasts;
+      }
+
+      async function loadWeatherForecasts() {
+        const cards = [...document.querySelectorAll("[data-weather-card]")];
+
+        if (typeof fetch !== "function") {
+          cards.forEach((card) => {
+            setWeatherUnavailable(card, "Live weather needs an internet connection in a modern browser.");
+          });
+          return;
+        }
+
+        const cities = [...new Set(cards.map((card) => card.dataset.weatherCity))];
+
+        await Promise.all(
+          cities.map(async (city) => {
+            try {
+              const forecasts = await fetchCityForecast(city);
+              cards
+                .filter((card) => card.dataset.weatherCity === city)
+                .forEach((card) => {
+                  const forecast = forecasts[card.dataset.weatherDate];
+
+                  if (forecast) {
+                    updateWeatherCard(card, forecast);
+                    return;
+                  }
+
+                  setWeatherUnavailable(
+                    card,
+                    "Open-Meteo publishes live forecasts up to 16 days ahead. This date will appear closer to the trip.",
+                  );
+                });
+            } catch (error) {
+              cards
+                .filter((card) => card.dataset.weatherCity === city)
+                .forEach((card) => {
+                  setWeatherUnavailable(card, "The live forecast could not be loaded. Try refreshing the page later.");
+                });
+            }
+          }),
+        );
+      }
+
+      loadWeatherForecasts();
     </script>
   </body>
 </html>
