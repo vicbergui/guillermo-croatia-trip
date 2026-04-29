@@ -457,6 +457,12 @@
             url: "https://www.getyourguide.com/booking/4WMH79JP5VXA1LOSK3OGEQEZYY2AP568?visitor_id=5YRLVNN47GUQNDTJT3CI5QQDMA7KJ4XF&utm_source=getyourguide&utm_medium=email_transactional&utm_campaign=shopping_cart_confirmation_v2&utm_content=booking_summary_activity_details_move_v3",
           },
           {
+            id: "dalmatian-islands-hvar-blue-cave",
+            title: "Dalmatian Islands, Hvar, and Blue Cave",
+            date: "2026-05-15",
+            startingCity: "Split",
+          },
+          {
             id: "montenegro",
             title: "From Dubrovnik: Montenegro Day Trip",
             date: "2026-05-18",
@@ -650,12 +656,16 @@
               <span class="badge badge-tour">Tour</span>
               <span class="card-city">Starts in ${escapeHtml(tour.startingCity)}</span>
             </div>
-            <h3><a href="${tour.url}" target="_blank" rel="noreferrer">${escapeHtml(tour.title)}</a></h3>
+            <h3>${tour.url ? `<a href="${tour.url}" target="_blank" rel="noreferrer">${escapeHtml(tour.title)}</a>` : escapeHtml(tour.title)}</h3>
             <p>${formatWeekday(tour.date)}, ${formatDate(tour.date)}</p>
-            <div class="card-actions">
-              <span>GetYourGuide booking</span>
-              <a href="${tour.url}" target="_blank" rel="noreferrer">View booking</a>
-            </div>
+            ${
+              tour.url
+                ? `<div class="card-actions">
+                    <span>GetYourGuide booking</span>
+                    <a href="${tour.url}" target="_blank" rel="noreferrer">View booking</a>
+                  </div>`
+                : ""
+            }
           </article>
         `;
       }
