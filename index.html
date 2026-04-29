@@ -224,7 +224,9 @@
       .day-date {
         background: var(--sky-soft);
         border-right: 1px solid var(--line);
-        display: flex;
+        display: grid;
+        gap: 14px;
+        align-content: start;
         padding: 22px;
       }
 
@@ -287,7 +289,6 @@
         border-radius: var(--radius);
         display: grid;
         gap: 10px;
-        margin-bottom: 14px;
         padding: 14px 16px;
       }
 
@@ -809,13 +810,13 @@
                 <h3>${formatWeekday(date)}</h3>
                 <p>${formatDate(date)}</p>
               </div>
+              ${WeatherCard(date, base)}
             </div>
             <div class="day-content">
               <div class="base-row">
                 <span class="base-label">Base</span>
                 <strong>${escapeHtml(base)}</strong>
               </div>
-              ${WeatherCard(date, base)}
               <div class="day-items">
                 ${travel.map((travelItem) => TravelCard(travelItem)).join("")}
                 ${activeHotel ? HotelCard(activeHotel) : ""}
